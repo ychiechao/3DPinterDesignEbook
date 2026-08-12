@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 列印研習：2 小時入門課程</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --text: #334155;
+      --muted: #667085;
+      --line: #d8dee8;
+      --panel: #ffffff;
+      --soft: #f5f7fb;
+      --blue: #2563eb;
+      --teal: #0f766e;
+      --amber: #c57918;
+      --red: #be3d2c;
+      --violet: #6d3fc0;
+      --green: #168256;
+      --rose: #e0527d;
+      --cyan: #0891b2;
+      --lime: #65a30d;
+      --orange: #ea580c;
+      --shadow: 0 16px 36px rgba(23, 32, 51, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.08), transparent 28%),
+        linear-gradient(315deg, rgba(224, 82, 125, 0.09), transparent 26%),
+        linear-gradient(90deg, rgba(216, 222, 232, 0.55) 1px, transparent 1px),
+        linear-gradient(rgba(216, 222, 232, 0.55) 1px, transparent 1px),
+        #eef2f7;
+      background-size: 32px 32px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.93);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 26px rgba(23, 32, 51, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.24) 0 28%, transparent 28% 100%),
+        linear-gradient(135deg, var(--blue), var(--teal) 48%, var(--amber));
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 900;
+      letter-spacing: 0;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.24);
+    }
+
+    .brand-title {
+      min-width: 0;
+    }
+
+    .brand-title strong {
+      display: block;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand-title span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .nav a {
+      flex: 0 0 auto;
+      text-decoration: none;
+      font-size: 13px;
+      color: var(--muted);
+      border: 1px solid transparent;
+      padding: 8px 10px;
+      border-radius: 8px;
+      line-height: 1.2;
+    }
+
+    .nav a:hover,
+    .nav a:focus-visible {
+      color: var(--blue);
+      background: #edf4ff;
+      border-color: #c9dcff;
+      outline: none;
+    }
+
+    .topbar > .nav {
+      display: none;
+    }
+
+    .print-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+      cursor: pointer;
+    }
+
+    .print-btn:hover {
+      background: #263248;
+    }
+
+    .wrap {
+      width: min(1360px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .page-shell {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      padding-top: 24px;
+    }
+
+    .content {
+      min-width: 0;
+    }
+
+    .side-menu {
+      position: sticky;
+      top: 86px;
+      z-index: 10;
+      max-height: calc(100vh - 106px);
+      overflow: auto;
+      scrollbar-width: thin;
+    }
+
+    .side-menu-inner {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.08), transparent 38%),
+        rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 26px rgba(23, 32, 51, 0.1);
+      padding: 14px;
+    }
+
+    .side-label {
+      margin: 2px 4px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .side-menu a {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 10px;
+      align-items: center;
+      min-height: 42px;
+      margin: 6px 0;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .side-menu a span {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #eef2ff;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .side-menu a:hover,
+    .side-menu a.active {
+      transform: translateX(3px);
+      border-color: #bfd6ff;
+      background: #eff6ff;
+      color: var(--blue);
+    }
+
+    .side-menu a:nth-of-type(3n+1) span {
+      background: #ecfeff;
+      color: var(--teal);
+    }
+
+    .side-menu a:nth-of-type(3n+2) span {
+      background: #fff7ed;
+      color: var(--orange);
+    }
+
+    .side-menu a:nth-of-type(3n+3) span {
+      background: #fdf2f8;
+      color: var(--rose);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+      gap: 28px;
+      align-items: stretch;
+      padding: 42px 0 28px;
+    }
+
+    .hero-copy {
+      min-height: 430px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 36px 0;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #bfd6ff;
+      background: #eff6ff;
+      color: var(--blue);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(36px, 5.6vw, 66px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .hero-copy p {
+      max-width: 640px;
+      margin: 18px 0 0;
+      font-size: 18px;
+      color: #42526a;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .action {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      text-decoration: none;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(23, 32, 51, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .action.primary {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      color: white;
+    }
+
+    .action:hover {
+      transform: translateY(-2px);
+      border-color: #a9c6ff;
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.16);
+    }
+
+    .machine {
+      position: relative;
+      min-height: 430px;
+      overflow: hidden;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.85), transparent 20%),
+        linear-gradient(145deg, #101828 0%, #20364d 48%, #0f766e 100%);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .machine::before {
+      content: "";
+      position: absolute;
+      inset: 34px 44px 78px;
+      border: 12px solid rgba(255, 255, 255, 0.9);
+      border-bottom-width: 18px;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 2px rgba(16, 24, 40, 0.22);
+    }
+
+    .machine::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 96px;
+      width: 70px;
+      height: 52px;
+      transform: translateX(-50%);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #f7fafc, #cbd5e1);
+      box-shadow: 0 10px 20px rgba(16, 24, 40, 0.34);
+    }
+
+    .gantry {
+      position: absolute;
+      left: 74px;
+      right: 74px;
+      top: 120px;
+      height: 10px;
+      border-radius: 5px;
+      background: #e2e8f0;
+      box-shadow: 0 3px 0 rgba(16, 24, 40, 0.15);
+    }
+
+    .nozzle {
+      position: absolute;
+      left: 50%;
+      top: 148px;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 17px solid transparent;
+      border-right: 17px solid transparent;
+      border-top: 46px solid #f59e0b;
+      filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.3));
+    }
+
+    .filament {
+      position: absolute;
+      left: calc(50% - 2px);
+      top: 193px;
+      width: 4px;
+      height: 76px;
+      border-radius: 2px;
+      background: #f59e0b;
+    }
+
+    .print-bed {
+      position: absolute;
+      left: 82px;
+      right: 82px;
+      bottom: 78px;
+      height: 28px;
+      transform: skewX(-18deg);
+      border-radius: 8px;
+      background: linear-gradient(90deg, #dbeafe, #ffffff, #ccfbf1);
+      box-shadow: 0 12px 24px rgba(16, 24, 40, 0.28);
+    }
+
+    .printed-object {
+      position: absolute;
+      left: 50%;
+      bottom: 111px;
+      width: 132px;
+      height: 72px;
+      transform: translateX(-50%);
+      border-radius: 8px 8px 3px 3px;
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.35) 0 3px, transparent 3px 7px),
+        linear-gradient(135deg, #22c55e, #14b8a6);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35), 0 14px 22px rgba(0, 0, 0, 0.28);
+    }
+
+    .spool {
+      position: absolute;
+      right: 36px;
+      top: 42px;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      border: 14px solid #f59e0b;
+      background: #101828;
+      box-shadow: inset 0 0 0 9px #20364d, 0 10px 22px rgba(0, 0, 0, 0.28);
+    }
+
+    .machine-note {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 24px;
+      color: rgba(255, 255, 255, 0.86);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .quick {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 8px 0 34px;
+    }
+
+    .metric {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(23, 32, 51, 0.08);
+      border-top: 5px solid var(--blue);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .metric:nth-child(2) { border-top-color: var(--rose); }
+    .metric:nth-child(3) { border-top-color: var(--teal); }
+    .metric:nth-child(4) { border-top-color: var(--amber); }
+
+    .metric:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 30px rgba(23, 32, 51, 0.12);
+    }
+
+    .metric b {
+      display: block;
+      color: var(--ink);
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .case-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .case-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 34px rgba(23, 32, 51, 0.13);
+    }
+
+    .case-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .case-content {
+      padding: 16px;
+    }
+
+    .case-tag {
+      display: inline-flex;
+      margin-bottom: 9px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      background: #eff6ff;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .case-content h3 {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .case-content p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .material-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .material-photo-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .material-photo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 34px rgba(23, 32, 51, 0.13);
+    }
+
+    .material-photo-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .material-photo-body {
+      padding: 15px;
+    }
+
+    .material-photo-body h3 {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .material-photo-body p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .material-photo-body a {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .material-photo-body a:hover {
+      text-decoration: underline;
+    }
+
+    .prompt-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .prompt {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      padding: 14px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      border-left: 5px solid var(--amber);
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .video-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .video-frame {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background: #0f172a;
+    }
+
+    .video-thumb {
+      position: absolute;
+      inset: 0;
+      display: block;
+      color: white;
+      text-decoration: none;
+      overflow: hidden;
+    }
+
+    .video-thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .video-thumb:hover img {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+
+    .play-badge {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border-radius: 999px;
+      padding: 10px 18px;
+      background: #dc2626;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.32);
+      white-space: nowrap;
+    }
+
+    .play-badge::before {
+      content: "▶";
+      margin-right: 8px;
+      font-size: 13px;
+    }
+
+    .video-content {
+      padding: 16px;
+    }
+
+    .video-content h3 {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .video-content p {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    .video-link {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .video-link:hover {
+      text-decoration: underline;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .resource-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 16px;
+      border-top: 5px solid var(--cyan);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .resource-card:nth-child(4n+2) { border-top-color: var(--rose); }
+    .resource-card:nth-child(4n+3) { border-top-color: var(--lime); }
+    .resource-card:nth-child(4n+4) { border-top-color: var(--orange); }
+
+    .resource-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 30px rgba(23, 32, 51, 0.12);
+    }
+
+    .resource-card h3 {
+      margin: 0 0 6px;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .resource-card p {
+      margin: 0 0 12px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .resource-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: auto 0 12px;
+    }
+
+    .resource-meta span {
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: var(--muted);
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .resource-card a {
+      width: fit-content;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .resource-card a:hover {
+      text-decoration: underline;
+    }
+
+    section {
+      scroll-margin-top: 92px;
+      margin: 0 0 26px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(23, 32, 51, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--blue), var(--teal), var(--amber), var(--rose));
+    }
+
+    section:nth-of-type(4n+2)::before {
+      background: linear-gradient(90deg, var(--rose), var(--orange), var(--amber));
+    }
+
+    section:nth-of-type(4n+3)::before {
+      background: linear-gradient(90deg, var(--teal), var(--cyan), var(--blue));
+    }
+
+    section:nth-of-type(4n+4)::before {
+      background: linear-gradient(90deg, var(--lime), var(--teal), var(--violet));
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 26px 24px 22px;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.055), transparent 42%),
+        linear-gradient(315deg, rgba(22, 130, 86, 0.05), transparent 42%);
+    }
+
+    .section-kicker {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      border: 1px solid #c9dcff;
+      border-radius: 999px;
+      padding: 3px 10px;
+      background: #eff6ff;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 25px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 8px 0 0;
+      max-width: 720px;
+      color: var(--muted);
+    }
+
+    .time-pill {
+      flex: 0 0 auto;
+      border: 1px solid transparent;
+      background: linear-gradient(135deg, #fff7ed, #ecfeff);
+      color: var(--teal);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .section-body {
+      padding: 24px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 16px;
+      min-height: 100%;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .mini-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 30px rgba(23, 32, 51, 0.11);
+    }
+
+    .mini-card h3 {
+      color: var(--ink);
+      margin: 0 0 8px;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .mini-card p {
+      margin: 0;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .mini-card.accent-blue {
+      border-top: 4px solid var(--blue);
+    }
+
+    .mini-card.accent-teal {
+      border-top: 4px solid var(--teal);
+    }
+
+    .mini-card.accent-amber {
+      border-top: 4px solid var(--amber);
+    }
+
+    .mini-card.accent-violet {
+      border-top: 4px solid var(--violet);
+    }
+
+    .mini-card.accent-green {
+      border-top: 4px solid var(--green);
+    }
+
+    .mini-card.accent-red {
+      border-top: 4px solid var(--red);
+    }
+
+    .agenda {
+      display: grid;
+      gap: 10px;
+    }
+
+    .agenda-row {
+      display: grid;
+      grid-template-columns: 92px 180px 1fr 180px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .agenda-row:hover {
+      transform: translateX(4px);
+      border-color: #bfd6ff;
+      box-shadow: 0 12px 24px rgba(23, 32, 51, 0.1);
+    }
+
+    .agenda-row strong {
+      color: var(--ink);
+    }
+
+    .agenda-row .minutes {
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .agenda-row .method {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 16px;
+      position: relative;
+    }
+
+    .timeline-year {
+      color: var(--blue);
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .timeline-content {
+      border-left: 3px solid #c9dcff;
+      padding: 0 0 12px 16px;
+    }
+
+    .timeline-content b {
+      display: block;
+      color: var(--ink);
+    }
+
+    .type-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: white;
+      font-size: 14px;
+    }
+
+    .type-table th,
+    .type-table td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    .type-table th {
+      background: #172033;
+      color: white;
+      font-size: 13px;
+    }
+
+    .type-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .flow-step {
+      position: relative;
+      min-height: 132px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fff;
+      border-top: 4px solid var(--blue);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .flow-step:nth-child(2) { border-top-color: var(--teal); }
+    .flow-step:nth-child(3) { border-top-color: var(--amber); }
+    .flow-step:nth-child(4) { border-top-color: var(--rose); }
+    .flow-step:nth-child(5) { border-top-color: var(--violet); }
+    .flow-step:nth-child(6) { border-top-color: var(--green); }
+
+    .flow-step:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 30px rgba(23, 32, 51, 0.11);
+    }
+
+    .flow-step::after {
+      content: ">";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .flow-step:last-child::after {
+      content: "";
+    }
+
+    .flow-step b {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .flow-step span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .callout {
+      border-left: 5px solid var(--blue);
+      border-radius: 8px;
+      background: #eff6ff;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .callout strong {
+      color: var(--ink);
+    }
+
+    .practice-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 18px;
+    }
+
+    .steps {
+      counter-reset: workstep;
+      display: grid;
+      gap: 10px;
+    }
+
+    .workstep {
+      counter-increment: workstep;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      padding: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .workstep:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 26px rgba(15, 118, 110, 0.13);
+    }
+
+    .workstep::before {
+      content: counter(workstep);
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      border-radius: 8px;
+      font-weight: 900;
+    }
+
+    .workstep b {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .spec-box {
+      background: #172033;
+      color: white;
+      border-radius: 8px;
+      padding: 18px;
+      align-self: start;
+    }
+
+    .spec-box h3 {
+      margin: 0 0 12px;
+      color: white;
+      font-size: 18px;
+    }
+
+    .spec-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 14px;
+    }
+
+    .spec-list li {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+    }
+
+    .spec-list li::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-top: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex: 0 0 auto;
+    }
+
+    .settings {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .setting {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fff;
+      border-left: 5px solid var(--teal);
+    }
+
+    .setting:nth-child(2) { border-left-color: var(--amber); }
+    .setting:nth-child(3) { border-left-color: var(--rose); }
+    .setting:nth-child(4) { border-left-color: var(--violet); }
+
+    .setting b {
+      display: block;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    .setting small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .file-compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .file-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .file-card header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      color: white;
+      background: #172033;
+    }
+
+    .file-card header b {
+      font-size: 18px;
+    }
+
+    .file-card pre {
+      margin: 0;
+      padding: 16px;
+      overflow-x: auto;
+      background: #0f172a;
+      color: #dbeafe;
+      font-size: 12px;
+      line-height: 1.7;
+      min-height: 180px;
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .box {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      margin-top: 2px;
+      border: 2px solid #aab4c3;
+      border-radius: 5px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .check.done .box {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .check.done .box::before {
+      content: "✓";
+    }
+
+    .check.done span {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .footer {
+      padding: 12px 0 44px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 960px) {
+      .topbar {
+        grid-template-columns: 1fr auto;
+      }
+
+      .page-shell {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .side-menu {
+        position: static;
+        max-height: none;
+        overflow: visible;
+      }
+
+      .side-menu-inner {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .side-label {
+        grid-column: 1 / -1;
+        margin-bottom: 4px;
+      }
+
+      .side-menu a {
+        margin: 0;
+      }
+
+      .hero,
+      .practice-layout,
+      .file-compare,
+      .case-grid,
+      .material-photo-grid,
+      .video-grid,
+      .resource-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick,
+      .settings,
+      .prompt-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .agenda-row {
+        grid-template-columns: 84px 1fr;
+      }
+
+      .agenda-row .detail,
+      .agenda-row .method {
+        grid-column: 2;
+      }
+
+      .flow {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .flow-step::after {
+        content: "";
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        padding: 10px 14px;
+      }
+
+      .brand-title strong {
+        white-space: normal;
+      }
+
+      .wrap {
+        width: min(100% - 28px, 1180px);
+      }
+
+      .page-shell {
+        padding-top: 16px;
+      }
+
+      .side-menu-inner {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+
+      .hero {
+        padding-top: 24px;
+      }
+
+      .hero-copy,
+      .machine {
+        min-height: 340px;
+      }
+
+      .hero-copy {
+        padding: 12px 0;
+      }
+
+      .machine::before {
+        inset: 28px 30px 64px;
+      }
+
+      .spool {
+        right: 25px;
+        width: 62px;
+        height: 62px;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .time-pill {
+        display: inline-block;
+        margin-top: 12px;
+      }
+
+      .section-body,
+      .section-head {
+        padding: 18px;
+      }
+
+      .grid-2,
+      .grid-3,
+      .quick,
+      .settings,
+      .checklist,
+      .prompt-list,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .agenda-row {
+        grid-template-columns: 1fr;
+      }
+
+      .agenda-row .detail,
+      .agenda-row .method {
+        grid-column: auto;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .timeline-year {
+        text-align: left;
+      }
+
+      .timeline-content {
+        padding-left: 12px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .topbar,
+      .side-menu,
+      .hero-actions,
+      .print-btn {
+        display: none;
+      }
+
+      .wrap {
+        width: 100%;
+      }
+
+      .hero {
+        display: block;
+        padding: 0 0 12px;
+      }
+
+      .hero-copy {
+        min-height: auto;
+        padding: 0;
+      }
+
+      .machine {
+        display: none;
+      }
+
+      section,
+      .metric {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">3D</div>
+        <div class="brand-title">
+          <strong>3D 列印研習</strong>
+          <span>2 小時入門課程教案</span>
+        </div>
+      </div>
+      <nav class="nav" aria-label="課程章節">
+        <a href="#intro">案例簡介</a>
+        <a href="#agenda">時間安排</a>
+        <a href="#history">發展歷史</a>
+        <a href="#types">列印種類</a>
+        <a href="#materials">材料用途</a>
+        <a href="#shoe-videos">印鞋影片</a>
+        <a href="#workflow">列印流程</a>
+        <a href="#tinkercad">Tinkercad</a>
+        <a href="#slicer">切片軟體</a>
+        <a href="#files">STL / G-code</a>
+        <a href="#resources">資源網站</a>
+        <a href="#check">學習檢核</a>
+      </nav>
+      <button class="print-btn" type="button" onclick="window.print()" aria-label="列印或匯出 PDF">列印講義</button>
+    </header>
+
+    <div class="page-shell wrap">
+      <aside class="side-menu" aria-label="章節選單">
+        <div class="side-menu-inner">
+          <div class="side-label">章節選單</div>
+          <a href="#intro"><span>01</span>案例簡介</a>
+          <a href="#agenda"><span>02</span>時間安排</a>
+          <a href="#history"><span>03</span>發展歷史</a>
+          <a href="#types"><span>04</span>列印種類</a>
+          <a href="#materials"><span>05</span>材料用途</a>
+          <a href="#shoe-videos"><span>06</span>印鞋影片</a>
+          <a href="#workflow"><span>07</span>列印流程</a>
+          <a href="#tinkercad"><span>08</span>Tinkercad</a>
+          <a href="#slicer"><span>09</span>切片軟體</a>
+          <a href="#files"><span>10</span>STL / G-code</a>
+          <a href="#resources"><span>11</span>資源網站</a>
+          <a href="#check"><span>12</span>學習檢核</a>
+        </div>
+      </aside>
+
+      <main class="content">
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">零基礎入門 · FDM 桌上型 3D 印表機</div>
+          <h1>3D 列印研習<br>2 小時課程</h1>
+          <p>
+            讓學員在短時間內看懂 3D 列印的發展、技術類型與完整流程，並完成一個可切片的 Tinkercad 小作品。
+          </p>
+          <div class="hero-actions">
+            <a class="action primary" href="#intro">先看案例簡介</a>
+            <a class="action" href="#tinkercad">跳到實作任務</a>
+            <a class="action" href="#check">查看課後檢核</a>
+          </div>
+        </div>
+
+        <div class="machine" role="img" aria-label="FDM 3D 印表機正在列印姓名牌的示意圖">
+          <div class="spool"></div>
+          <div class="gantry"></div>
+          <div class="nozzle"></div>
+          <div class="filament"></div>
+          <div class="printed-object"></div>
+          <div class="print-bed"></div>
+          <div class="machine-note">
+            <span>模型設計</span>
+            <span>切片設定</span>
+            <span>逐層成型</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick" aria-label="課程概要">
+        <div class="metric">
+          <b>120</b>
+          <span>分鐘完整課程</span>
+        </div>
+        <div class="metric">
+          <b>11</b>
+          <span>個教學段落</span>
+        </div>
+        <div class="metric">
+          <b>1</b>
+          <span>件 Tinkercad 作品</span>
+        </div>
+        <div class="metric">
+          <b>FDM</b>
+          <span>以常見桌機為主</span>
+        </div>
+      </div>
+
+      <section id="intro">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Opening Cases</div>
+            <h2>課程導入：3D 列印離生活很近</h2>
+            <p>用三則案例帶出 3D 列印的價值：它可以降低客製化成本、創造新的產品型態，也能讓孩子從零開始設計自己的作品。</p>
+          </div>
+          <div class="time-pill">0-10 分</div>
+        </div>
+        <div class="section-body">
+          <div class="case-grid">
+            <article class="case-card">
+              <img src="assets/case-dental-3d-printing.png" alt="3D 列印假牙新聞截圖">
+              <div class="case-content">
+                <span class="case-tag">醫療與公益</span>
+                <h3>3D 列印假牙降低客製化門檻</h3>
+                <p>牙科假牙需要符合個人口腔形狀，傳統製作成本高。3D 列印能把掃描、設計與製作串成數位流程，讓客製化醫療輔具更容易被討論與實作。</p>
+              </div>
+            </article>
+
+            <article class="case-card">
+              <img src="assets/case-fidget-toy-3d-printing.png" alt="3D 列印按壓玩具新聞截圖">
+              <div class="case-content">
+                <span class="case-tag">商品與創業</span>
+                <h3>按壓玩具把療癒感變成產品</h3>
+                <p>可按壓、可變形、可客製的指尖玩具，展現 3D 列印在小量生產與創意商品上的彈性。設計者可以快速測試造型、觸感與市場反應。</p>
+              </div>
+            </article>
+
+            <article class="case-card">
+              <img src="assets/case-toy-design-3d-printing.png" alt="3D 列印玩具與玩具機新聞截圖">
+              <div class="case-content">
+                <span class="case-tag">教育與設計</span>
+                <h3>小朋友也能從零開始設計玩具</h3>
+                <p>玩具是最容易引起學員想像的題材。從角色、零件、關節到配件，3D 列印讓設計不只停在圖紙，而是可以拿在手上反覆修改。</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="prompt-list">
+            <div class="prompt">想一想：哪一種物品最需要「客製化」？</div>
+            <div class="prompt">想一想：為什麼 3D 列印適合小量、多樣的產品？</div>
+            <div class="prompt">想一想：如果你能列印一個小物，你會先做什麼？</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="agenda">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Course Runbook</div>
+            <h2>120 分鐘課程流程</h2>
+            <p>這份安排適合講師照表操作，也能作為學員講義。實作段落集中在中後段，避免一開始就掉進軟體細節。</p>
+          </div>
+          <div class="time-pill">0-120 分</div>
+        </div>
+        <div class="section-body">
+          <div class="agenda">
+            <div class="agenda-row">
+              <div class="minutes">0-10 分</div>
+              <strong>課程導入</strong>
+              <div class="detail">以 3D 列印假牙、療癒按壓玩具、玩具設計案例說明生活、醫療、商品與教育應用。</div>
+              <div class="method">展示圖片案例與提問討論</div>
+            </div>
+            <div class="agenda-row">
+              <div class="minutes">10-25 分</div>
+              <strong>發展歷史</strong>
+              <div class="detail">從快速成型、工業應用，到桌上型印表機普及與 Maker 教育。</div>
+              <div class="method">簡報講解</div>
+            </div>
+            <div class="agenda-row">
+              <div class="minutes">25-40 分</div>
+              <strong>種類與材料</strong>
+              <div class="detail">FDM、SLA、SLS、金屬列印的技術差異，以及常見材料分類、特性與用途。</div>
+              <div class="method">表格比較與實物觀察</div>
+            </div>
+            <div class="agenda-row">
+              <div class="minutes">40-55 分</div>
+              <strong>3D 列印流程</strong>
+              <div class="detail">構想、建模、匯出 STL、切片、產生 G-code、列印與後處理。</div>
+              <div class="method">流程圖說明</div>
+            </div>
+            <div class="agenda-row">
+              <div class="minutes">55-85 分</div>
+              <strong>Tinkercad 實作</strong>
+              <div class="detail">環境與視角、繪圖工具、實體與洞、尺寸微調、聯集與交集概念、匯入匯出。</div>
+              <div class="method">設計姓名牌或鑰匙圈</div>
+            </div>
+            <div class="agenda-row">
+              <div class="minutes">85-105 分</div>
+              <strong>切片軟體應用</strong>
+              <div class="detail">匯入 STL、調整方向、層高、填充、支撐、速度與列印時間。</div>
+              <div class="method">Cura 或 PrusaSlicer 示範</div>
+            </div>
+            <div class="agenda-row">
+              <div class="minutes">105-115 分</div>
+              <strong>STL 與 G-code</strong>
+              <div class="detail">STL 是外型資料，G-code 是機器動作指令，兩者不可混用。</div>
+              <div class="method">對照範例檔說明</div>
+            </div>
+            <div class="agenda-row">
+              <div class="minutes">115-120 分</div>
+              <strong>總結與檢核</strong>
+              <div class="detail">回顧流程、常見錯誤、回答問題。</div>
+              <div class="method">快問快答</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="history">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Part 1</div>
+            <h2>3D 列印的發展歷史</h2>
+            <p>用時間線讓學員先建立脈絡：3D 列印不是玩具，而是從工業快速成型逐步走向教育與日常創作。</p>
+          </div>
+          <div class="time-pill">10-25 分</div>
+        </div>
+        <div class="section-body">
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-year">1980s</div>
+              <div class="timeline-content">
+                <b>快速成型技術出現</b>
+                早期主要用於產品開發，讓工程師能快速驗證外型、尺寸與組裝概念。
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">1990s</div>
+              <div class="timeline-content">
+                <b>工業與醫療應用擴大</b>
+                原型製作、模具、牙科、醫療模型等專業場域開始導入。
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2000s</div>
+              <div class="timeline-content">
+                <b>開源與桌上型設備推動普及</b>
+                FDM 桌機價格下降，學校、Maker 空間與個人創作者更容易接觸。
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">Now</div>
+              <div class="timeline-content">
+                <b>數位製造與跨域學習工具</b>
+                3D 列印成為設計思考、STEAM、機構設計與客製化製造的重要工具。
+              </div>
+            </div>
+          </div>
+          <div class="callout">
+            <strong>講師提示：</strong>可以拿一個「失敗品」一起展示，讓學員知道 3D 列印不是按下列印就一定成功，而是設計、材料、設定與機器狀態共同影響結果。
+          </div>
+        </div>
+      </section>
+
+      <section id="types">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Part 2</div>
+            <h2>3D 列印的種類</h2>
+            <p>聚焦初學者最需要分辨的差異：成型方式、材料、優點、限制與適用情境。</p>
+          </div>
+          <div class="time-pill">25-40 分</div>
+        </div>
+        <div class="section-body">
+          <table class="type-table">
+            <thead>
+              <tr>
+                <th>技術</th>
+                <th>成型方式</th>
+                <th>常見材料</th>
+                <th>適合用途</th>
+                <th>教學提醒</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>FDM / FFF</strong></td>
+                <td>加熱塑膠線材並逐層堆疊</td>
+                <td>PLA、PETG、ABS、TPU</td>
+                <td>教育、原型、機構件、生活小物</td>
+                <td>最適合本課程示範</td>
+              </tr>
+              <tr>
+                <td><strong>SLA / Resin</strong></td>
+                <td>用光固化液態樹脂</td>
+                <td>光敏樹脂</td>
+                <td>模型、公仔、牙科、細緻零件</td>
+                <td>精細但後處理與安全要求較高</td>
+              </tr>
+              <tr>
+                <td><strong>SLS</strong></td>
+                <td>雷射燒結粉末材料</td>
+                <td>尼龍粉末、複合材料</td>
+                <td>功能性零件、小量製造</td>
+                <td>設備較貴，多為專業服務</td>
+              </tr>
+              <tr>
+                <td><strong>金屬列印</strong></td>
+                <td>熔融或燒結金屬粉末</td>
+                <td>鈦合金、不鏽鋼、鋁合金</td>
+                <td>航太、醫療植入物、工業零件</td>
+                <td>適合介紹概念，不建議入門實作</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div id="materials" style="scroll-margin-top:92px;margin-top:22px">
+            <div class="section-kicker">Material Guide</div>
+            <h2>材料分類與用途</h2>
+            <p style="margin-top:8px;color:var(--muted)">
+              材料選擇會影響作品外觀、強度、彈性、耐熱與列印難度。入門課程建議先以 PLA 為主，再用用途比較帶出其他材料。
+            </p>
+
+            <table class="type-table" style="margin-top:14px">
+              <thead>
+                <tr>
+                  <th>材料分類</th>
+                  <th>常見材料</th>
+                  <th>特性</th>
+                  <th>適合用途</th>
+                  <th>教學提醒</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>FDM 熱塑性線材</strong></td>
+                  <td>PLA、PETG、ABS、ASA、TPU、Nylon</td>
+                  <td>加熱後軟化並擠出，冷卻後成型；材料選擇最多，也最適合教學。</td>
+                  <td>姓名牌、鑰匙圈、原型件、教具、收納零件、簡易機構件。</td>
+                  <td>本課程建議用 PLA，成功率高、氣味低、翹曲少。</td>
+                </tr>
+                <tr>
+                  <td><strong>PLA 類材料</strong></td>
+                  <td>一般 PLA、PLA+、木質 PLA、絲綢 PLA</td>
+                  <td>容易列印、外觀選擇多，但耐熱與韌性普通。</td>
+                  <td>入門作品、展示模型、裝飾品、教育用模型。</td>
+                  <td>不要放在高溫環境，例如車內日曬處。</td>
+                </tr>
+                <tr>
+                  <td><strong>功能性 FDM 材料</strong></td>
+                  <td>PETG、TPU、ABS / ASA、Nylon、PC</td>
+                  <td>依材料可提升韌性、彈性、耐候、耐磨或耐熱能力。</td>
+                  <td>PETG 適合耐用零件；TPU 適合軟墊與保護套；ASA 適合戶外件；Nylon 適合耐磨零件。</td>
+                  <td>列印難度較高，可能需要熱床、封箱、乾燥保存或通風。</td>
+                </tr>
+                <tr>
+                  <td><strong>光固化樹脂</strong></td>
+                  <td>標準樹脂、韌性樹脂、耐高溫樹脂、鑄造樹脂</td>
+                  <td>細節精緻、表面平滑，但需清洗、二次固化與安全防護。</td>
+                  <td>公仔、牙科模型、珠寶原型、小型精細零件。</td>
+                  <td>需戴手套並避免皮膚接觸，課堂可展示樣品即可。</td>
+                </tr>
+                <tr>
+                  <td><strong>粉末材料</strong></td>
+                  <td>PA12 尼龍粉、TPU 粉、玻纖填充尼龍</td>
+                  <td>不一定需要支撐，可做較複雜形狀，強度與耐用度佳。</td>
+                  <td>功能性原型、小量生產、卡扣、活動關節、複雜零件。</td>
+                  <td>多由專業設備或列印服務完成，適合介紹產業應用。</td>
+                </tr>
+                <tr>
+                  <td><strong>金屬材料</strong></td>
+                  <td>不鏽鋼、鋁合金、鈦合金、工具鋼</td>
+                  <td>強度高、耐熱佳，可製作高階功能零件，但成本與設備門檻高。</td>
+                  <td>航太、醫療植入物、模具、散熱件、高強度機構件。</td>
+                  <td>入門課程以案例介紹即可，重點是理解 3D 列印不只限於塑膠。</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="grid-3" style="margin-top:16px">
+              <div class="mini-card accent-green">
+                <h3>入門教學首選</h3>
+                <p>PLA：好列印、成功率高、適合姓名牌、鑰匙圈與教具。適合用來建立第一次成功經驗。</p>
+              </div>
+              <div class="mini-card accent-blue">
+                <h3>需要耐用一點</h3>
+                <p>PETG：比 PLA 更有韌性與耐熱性，適合簡易機構件、收納零件與常被拿取的作品。</p>
+              </div>
+              <div class="mini-card accent-violet">
+                <h3>需要柔軟彈性</h3>
+                <p>TPU：適合軟墊、保護套、輪胎、止滑件，但列印速度通常要放慢。</p>
+              </div>
+            </div>
+
+            <div style="margin-top:22px">
+              <div class="section-kicker">Material Photos</div>
+              <h2>材料照片小卡</h2>
+              <p style="margin-top:8px;color:var(--muted)">
+                以下照片取自 3DPBASE 材料商品頁，可用來讓學員直觀看到不同線材外觀。講解時可搭配「容易列印、耐用、柔軟、耐候、耐磨、複合材料」六個關鍵字。
+              </p>
+
+              <div class="material-photo-grid">
+                <article class="material-photo-card">
+                  <img src="assets/material-pla-st.jpg" alt="eSUN PLA ST 超韌 3D 列印線材照片">
+                  <div class="material-photo-body">
+                    <span class="case-tag">PLA</span>
+                    <h3>PLA ST 超韌</h3>
+                    <p>適合入門作品、教具、原型與需要比一般 PLA 更有韌性的列印件。</p>
+                    <a href="https://www.3dpbase.com/shop/esun-pla-st/" target="_blank" rel="noopener">查看來源</a>
+                  </div>
+                </article>
+
+                <article class="material-photo-card">
+                  <img src="assets/material-petg.jpg" alt="eSUN PETG 3D 列印線材照片">
+                  <div class="material-photo-body">
+                    <span class="case-tag">PETG</span>
+                    <h3>PETG 日常功能件</h3>
+                    <p>韌性與耐用性比 PLA 更好，適合收納零件、支架、戶外或半戶外作品。</p>
+                    <a href="https://www.3dpbase.com/shop/esun-petg/" target="_blank" rel="noopener">查看來源</a>
+                  </div>
+                </article>
+
+                <article class="material-photo-card">
+                  <img src="assets/material-tpu-95a.jpg" alt="eSUN TPU 95A 3D 列印線材照片">
+                  <div class="material-photo-body">
+                    <span class="case-tag">TPU</span>
+                    <h3>TPU 95A 彈性材料</h3>
+                    <p>可彎曲、有回彈，適合保護套、止滑墊、鞋墊、減震與穿戴配件。</p>
+                    <a href="https://www.3dpbase.com/shop/tpu-95a/" target="_blank" rel="noopener">查看來源</a>
+                  </div>
+                </article>
+
+                <article class="material-photo-card">
+                  <img src="assets/material-asa.jpg" alt="Bambu ASA 抗 UV 3D 列印線材照片">
+                  <div class="material-photo-body">
+                    <span class="case-tag">ASA</span>
+                    <h3>ASA 抗 UV 耐候</h3>
+                    <p>適合戶外標牌、外殼、車用或長期日曬環境，但列印環境要求較高。</p>
+                    <a href="https://www.3dpbase.com/shop/bambu-asa-uv-resistant/" target="_blank" rel="noopener">查看來源</a>
+                  </div>
+                </article>
+
+                <article class="material-photo-card">
+                  <img src="assets/material-pa12.jpg" alt="eSUN PA12 3D 列印線材照片">
+                  <div class="material-photo-body">
+                    <span class="case-tag">PA12</span>
+                    <h3>PA12 尼龍材料</h3>
+                    <p>耐磨、韌性佳，適合齒輪、治具、卡扣與機械零件，但需注意吸濕與烘乾。</p>
+                    <a href="https://www.3dpbase.com/shop/esun-pa12/" target="_blank" rel="noopener">查看來源</a>
+                  </div>
+                </article>
+
+                <article class="material-photo-card">
+                  <img src="assets/material-petg-cf.jpg" alt="Bambu PETG CF 碳纖增強 3D 列印線材照片">
+                  <div class="material-photo-body">
+                    <span class="case-tag">PETG-CF</span>
+                    <h3>PETG CF 碳纖增強</h3>
+                    <p>加入碳纖提升剛性與尺寸穩定，適合結構件與工具件，通常需使用耐磨噴嘴。</p>
+                    <a href="https://www.3dpbase.com/shop/bambu-petg-cf/" target="_blank" rel="noopener">查看來源</a>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+
+          <div id="shoe-videos" style="scroll-margin-top:92px;margin-top:26px">
+            <div class="section-kicker">Footwear Videos</div>
+            <h2>印鞋影片補充：兩種 3D 列印技術</h2>
+            <p style="margin-top:8px;color:var(--muted)">
+              鞋子是很好的延伸案例，因為它同時需要尺寸客製、彈性、耐磨、支撐與舒適度。可用這兩支影片讓學員比較「個人原型製作」與「品牌量產鞋底」的差異。
+            </p>
+
+            <div class="video-grid">
+              <article class="video-card">
+                <div class="video-frame">
+                  <a class="video-thumb" href="https://www.youtube.com/watch?v=dGDzf6ZwwI4" target="_blank" rel="noopener" aria-label="開啟 YouTube 影片：I 3D PRINTED SHOES And WORE Them For A WEEK">
+                    <img src="https://img.youtube.com/vi/dGDzf6ZwwI4/hqdefault.jpg" alt="I 3D PRINTED SHOES And WORE Them For A WEEK 影片縮圖">
+                    <span class="play-badge">開啟 YouTube</span>
+                  </a>
+                </div>
+                <div class="video-content">
+                  <span class="case-tag">FDM / FFF + 柔性線材</span>
+                  <h3>個人實作：從設計到穿上一週</h3>
+                  <p>這支影片適合放在入門課，用來說明 FDM 也能製作可穿戴原型。重點可放在 TPU/TPE 類柔性線材、列印時間、支撐性、耐用度與反覆修改。</p>
+                  <a class="video-link" href="https://www.youtube.com/watch?v=dGDzf6ZwwI4" target="_blank" rel="noopener">開啟 YouTube 影片</a>
+                </div>
+              </article>
+
+              <article class="video-card">
+                <div class="video-frame">
+                  <a class="video-thumb" href="https://www.youtube.com/watch?v=qlomslovAnI" target="_blank" rel="noopener" aria-label="開啟 YouTube 影片：This Is Adidas' First Mass Market 3D-Printed Shoe">
+                    <img src="https://img.youtube.com/vi/qlomslovAnI/hqdefault.jpg" alt="This Is Adidas' First Mass Market 3D-Printed Shoe 影片縮圖">
+                    <span class="play-badge">開啟 YouTube</span>
+                  </a>
+                </div>
+                <div class="video-content">
+                  <span class="case-tag">Carbon DLS / CLIP 光固化</span>
+                  <h3>量產案例：Adidas 3D 列印中底</h3>
+                  <p>這支影片適合說明工業級光固化連續列印，透過彈性樹脂與晶格結構製作鞋中底。重點可放在客製化、量產速度、材料性能與傳統製鞋限制。</p>
+                  <a class="video-link" href="https://www.youtube.com/watch?v=qlomslovAnI" target="_blank" rel="noopener">開啟 YouTube 影片</a>
+                </div>
+              </article>
+            </div>
+
+            <table class="type-table" style="margin-top:16px">
+              <thead>
+                <tr>
+                  <th>比較項目</th>
+                  <th>FDM / 柔性線材印鞋</th>
+                  <th>Carbon DLS 光固化鞋中底</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>定位</strong></td>
+                  <td>個人創作、快速原型、設計驗證</td>
+                  <td>品牌產品開發、客製化鞋中底、量產製程</td>
+                </tr>
+                <tr>
+                  <td><strong>材料</strong></td>
+                  <td>TPU、TPE 等柔性線材</td>
+                  <td>彈性光固化樹脂或聚氨酯類材料</td>
+                </tr>
+                <tr>
+                  <td><strong>優點</strong></td>
+                  <td>設備容易取得，適合學校與 Maker 實驗</td>
+                  <td>表面品質佳，可做複雜晶格與性能調校</td>
+                </tr>
+                <tr>
+                  <td><strong>限制</strong></td>
+                  <td>列印時間長，層紋明顯，舒適度與耐用度需反覆調整</td>
+                  <td>設備、材料與後處理門檻高，不適合一般入門實作</td>
+                </tr>
+                <tr>
+                  <td><strong>課堂提問</strong></td>
+                  <td>如果要讓鞋子更舒服，模型要改哪裡？</td>
+                  <td>為什麼晶格結構適合拿來做鞋中底？</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Part 3</div>
+            <h2>3D 列印完整流程</h2>
+            <p>這一段是整堂課的骨架，讓學員知道 Tinkercad、STL、切片軟體與印表機各自負責哪一段。</p>
+          </div>
+          <div class="time-pill">40-55 分</div>
+        </div>
+        <div class="section-body">
+          <div class="flow">
+            <div class="flow-step">
+              <b>1. 構想</b>
+              <span>先決定作品用途、尺寸、是否需要孔洞或卡扣。</span>
+            </div>
+            <div class="flow-step">
+              <b>2. 建模</b>
+              <span>在 Tinkercad 或其他 3D 軟體建立模型。</span>
+            </div>
+            <div class="flow-step">
+              <b>3. 匯出 STL</b>
+              <span>把模型外型輸出成切片軟體可讀的格式。</span>
+            </div>
+            <div class="flow-step">
+              <b>4. 切片</b>
+              <span>設定層高、填充、支撐、速度與材料。</span>
+            </div>
+            <div class="flow-step">
+              <b>5. G-code</b>
+              <span>轉成印表機能執行的移動與加熱指令。</span>
+            </div>
+            <div class="flow-step">
+              <b>6. 列印</b>
+              <span>觀察首層、等待成型，必要時做後處理。</span>
+            </div>
+          </div>
+          <div class="callout">
+            <strong>一句話版本：</strong>設計模型的是人，描述外型的是 STL，規劃路徑的是切片軟體，真正驅動機器的是 G-code。
+          </div>
+        </div>
+      </section>
+
+      <section id="tinkercad">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Part 4</div>
+            <h2>Tinkercad 設計與操作</h2>
+            <p>這一章是實作核心，先讓學員熟悉環境與視角，再從基本工具、尺寸控制、實體與洞的布林組合，走到匯出與匯入。</p>
+          </div>
+          <div class="time-pill">55-85 分</div>
+        </div>
+        <div class="section-body">
+          <div class="practice-layout">
+            <div>
+              <div class="steps">
+                <div class="workstep">
+                  <div>
+                    <b>環境介紹：滑鼠與可視角度操作</b>
+                    認識工作平面、格線、視角方塊、基本形狀面板與屬性面板。練習左鍵選取與拖曳、右鍵拖曳旋轉視角、滾輪縮放、Shift + 右鍵拖曳平移視角，並用視角方塊切回上視圖與等角視圖。
+                  </div>
+                </div>
+                <div class="workstep">
+                  <div>
+                    <b>繪圖工具介紹</b>
+                    示範 Basic Shapes、Text、Scribble、Shape Generators，以及常用輔助工具 Workplane、Ruler、Align、Mirror、Duplicate、Group、Ungroup。學員先放入長方體、圓柱與文字，建立基本操作手感。
+                  </div>
+                </div>
+                <div class="workstep">
+                  <div>
+                    <b>實體與洞的操作：尺寸與微調</b>
+                    說明 Solid 與 Hole 的差別，使用角落控制點調整長寬、上方控制點調整高度、黑色箭頭調整離地高度、旋轉控制點調角度。搭配 Ruler 直接輸入數值，示範 70 × 25 × 3 mm 底板與直徑 5 mm 吊孔。
+                  </div>
+                </div>
+                <div class="workstep">
+                  <div>
+                    <b>繪圖交集、聯集概念與組合</b>
+                    用布林概念理解模型組合：兩個 Solid 群組後形成聯集；Solid 加 Hole 群組後形成差集；交集代表只保留重疊區域，Tinkercad 入門操作可用複製物件、洞與群組來模擬需要保留或切除的形狀區域。最後用 Align 對齊文字、底板與吊孔。
+                  </div>
+                </div>
+                <div class="workstep">
+                  <div>
+                    <b>匯出與匯入</b>
+                    Export 選 STL 進入切片軟體；需要平面向量時可選 SVG；需要保留更多模型資訊時可認識 OBJ。Import 可匯入 STL、OBJ 或 SVG，提醒學員檢查單位、比例、方向與模型是否貼平工作平面。
+                  </div>
+                </div>
+              </div>
+
+              <div class="callout">
+                <strong>30 分鐘建議節奏：</strong>環境與視角 5 分、工具介紹 5 分、實體/洞與尺寸微調 8 分、布林組合 7 分、匯出匯入 5 分。
+              </div>
+            </div>
+
+            <aside class="spec-box">
+              <h3>實作成果</h3>
+              <ul class="spec-list">
+                <li>完成姓名牌或鑰匙圈</li>
+                <li>使用長方體、圓柱、文字等至少 2 種物件</li>
+                <li>能切換視角並檢查模型是否貼平</li>
+                <li>能用 Solid 與 Hole 做出吊孔或凹槽</li>
+                <li>能用 Ruler 輸入尺寸並微調位置</li>
+                <li>能完成 Group / Ungroup 與 Align</li>
+                <li>能匯出 STL，並知道如何重新匯入檢查</li>
+              </ul>
+            </aside>
+          </div>
+
+          <table class="type-table" style="margin-top:18px">
+            <thead>
+              <tr>
+                <th>小節</th>
+                <th>講師示範</th>
+                <th>學員練習</th>
+                <th>檢核點</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>環境與視角</strong></td>
+                <td>旋轉、縮放、平移、切回上視圖</td>
+                <td>從正面、上方、等角視角觀察同一物件</td>
+                <td>能找到工作平面與視角方塊</td>
+              </tr>
+              <tr>
+                <td><strong>繪圖工具</strong></td>
+                <td>拖曳基本形狀、文字、尺規與工作平面</td>
+                <td>放入底板、文字、圓柱</td>
+                <td>能選取、移動、複製與刪除物件</td>
+              </tr>
+              <tr>
+                <td><strong>實體與洞</strong></td>
+                <td>Solid / Hole 切換、群組切洞</td>
+                <td>在姓名牌左側做出吊孔</td>
+                <td>洞有穿透底板，模型沒有懸空</td>
+              </tr>
+              <tr>
+                <td><strong>尺寸與微調</strong></td>
+                <td>用 Ruler 輸入尺寸、位置與高度</td>
+                <td>把底板調成 70 × 25 × 3 mm</td>
+                <td>尺寸符合要求，文字高度適合列印</td>
+              </tr>
+              <tr>
+                <td><strong>交集與聯集</strong></td>
+                <td>用 Group 展示 Solid 聯集與 Hole 差集</td>
+                <td>完成文字凸起與吊孔切除</td>
+                <td>能說出 Group 對 Solid 與 Hole 的不同效果</td>
+              </tr>
+              <tr>
+                <td><strong>匯出與匯入</strong></td>
+                <td>Export STL，Import 回 Tinkercad 檢查比例</td>
+                <td>下載作品 STL 並準備切片</td>
+                <td>檔案可匯入切片軟體且大小正確</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:22px">
+            <div class="section-kicker">Tinkercad Links</div>
+            <h2>Tinkercad 補充網站連結</h2>
+            <p style="margin-top:8px;color:var(--muted)">
+              上課前可先把這些連結放在投影片或學習單中。學員若沒有帳號，可先從課堂代碼或官方學習中心進入。
+            </p>
+
+            <div class="resource-grid" style="margin-top:14px">
+              <article class="resource-card">
+                <h3>Tinkercad 官方首頁</h3>
+                <p>進入 Tinkercad 建立或開啟 3D Design 專案，適合作為課堂實作的主要入口。</p>
+                <div class="resource-meta"><span>建模入口</span><span>免費網頁工具</span></div>
+                <a href="https://www.tinkercad.com/" target="_blank" rel="noopener">前往 Tinkercad</a>
+              </article>
+
+              <article class="resource-card">
+                <h3>Tinkercad Learning Center</h3>
+                <p>官方學習中心，包含 3D Design、Circuits、Codeblocks 與課堂活動資源，適合課後自學。</p>
+                <div class="resource-meta"><span>官方教學</span><span>初學者友善</span></div>
+                <a href="https://www.tinkercad.com/learn/" target="_blank" rel="noopener">前往 Learning Center</a>
+              </article>
+
+              <article class="resource-card">
+                <h3>Learn 3D Design</h3>
+                <p>專注 3D 建模的官方學習頁，適合安排給學員做延伸練習，例如形狀組合、對齊、群組與挖洞。</p>
+                <div class="resource-meta"><span>3D Design</span><span>延伸練習</span></div>
+                <a href="https://www.tinkercad.com/learn/3d-design" target="_blank" rel="noopener">前往 3D Design 教學</a>
+              </article>
+
+              <article class="resource-card">
+                <h3>Tinkercad Gallery</h3>
+                <p>可瀏覽其他使用者分享的作品，適合課前找靈感，也能讓學員觀察作品如何由基本形狀組成。</p>
+                <div class="resource-meta"><span>作品靈感</span><span>觀摩範例</span></div>
+                <a href="https://www.tinkercad.com/things" target="_blank" rel="noopener">前往 Gallery</a>
+              </article>
+
+              <article class="resource-card">
+                <h3>Join Class</h3>
+                <p>若講師使用 Tinkercad Classrooms，可讓學生從這裡輸入課堂代碼加入，方便集中管理學員作品。</p>
+                <div class="resource-meta"><span>課堂代碼</span><span>教師管理</span></div>
+                <a href="https://www.tinkercad.com/joinclass" target="_blank" rel="noopener">前往 Join Class</a>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slicer">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Part 5</div>
+            <h2>切片軟體的應用</h2>
+            <p>示範 Cura 或 PrusaSlicer 都可以。重點不是背參數，而是知道每個設定會影響品質、強度、時間或成功率。</p>
+          </div>
+          <div class="time-pill">85-105 分</div>
+        </div>
+        <div class="section-body">
+          <div class="settings">
+            <div class="setting">
+              <b>Layer Height</b>
+              <small>層高越低越細緻，但列印時間更久。入門可用 0.2 mm。</small>
+            </div>
+            <div class="setting">
+              <b>Infill</b>
+              <small>填充影響強度與時間。姓名牌可用 10-20%。</small>
+            </div>
+            <div class="setting">
+              <b>Support</b>
+              <small>有懸空結構才需要支撐。平面姓名牌通常不需要。</small>
+            </div>
+            <div class="setting">
+              <b>Speed</b>
+              <small>速度太快可能降低品質。示範時可用預設值。</small>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:16px">
+            <div class="mini-card accent-blue">
+              <h3>講師示範順序</h3>
+              <p>匯入 STL、置中模型、檢查底面貼平台、選擇材料、設定層高與填充、切片、預覽路徑、儲存 G-code。</p>
+            </div>
+            <div class="mini-card accent-amber">
+              <h3>常見錯誤提醒</h3>
+              <p>模型太小、沒有貼平平台、文字懸空、孔洞太小、支撐未移除、機器材料或噴嘴設定選錯。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="files">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Part 6</div>
+            <h2>STL 與 G-code 檔案介紹</h2>
+            <p>用對照範例建立清楚觀念：STL 不是列印指令，G-code 也不是拿來重新編輯外型的模型檔。</p>
+          </div>
+          <div class="time-pill">105-115 分</div>
+        </div>
+        <div class="section-body">
+          <div class="file-compare">
+            <div class="file-card">
+              <header>
+                <b>STL</b>
+                <span>模型外型</span>
+              </header>
+              <pre>solid nameplate
+  facet normal 0 0 1
+    outer loop
+      vertex 0 0 3
+      vertex 70 0 3
+      vertex 70 25 3
+    endloop
+  endfacet
+endsolid nameplate</pre>
+            </div>
+            <div class="file-card">
+              <header>
+                <b>G-code</b>
+                <span>機器指令</span>
+              </header>
+              <pre>G28 ; home all axes
+M104 S200 ; set nozzle temp
+M140 S60 ; set bed temp
+G1 X20 Y20 Z0.2 F1500
+G1 X70 Y20 E4.2
+G1 X70 Y45 E8.4</pre>
+            </div>
+          </div>
+          <div class="grid-3" style="margin-top:16px">
+            <div class="mini-card accent-violet">
+              <h3>STL 像什麼？</h3>
+              <p>像模型的外殼資料，只描述幾何形狀與表面三角網格。</p>
+            </div>
+            <div class="mini-card accent-green">
+              <h3>切片軟體像什麼？</h3>
+              <p>像翻譯員，把模型轉成機器能執行的逐層路徑。</p>
+            </div>
+            <div class="mini-card accent-red">
+              <h3>G-code 像什麼？</h3>
+              <p>像印表機的動作清單，包含移動、擠料、加熱與風扇控制。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resources">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Resource Links</div>
+            <h2>3D 列印延伸資源</h2>
+            <p>課後可讓學員從下載既有模型開始，再嘗試用 AI 生成概念模型。提醒學員：下載或 AI 產生的模型都要檢查授權、比例、封閉網格、厚度與支撐需求。</p>
+          </div>
+          <div class="time-pill">課後延伸</div>
+        </div>
+        <div class="section-body">
+          <div class="section-kicker">Model Libraries</div>
+          <h2>線上下載模型網站</h2>
+          <p style="margin-top:8px;color:var(--muted)">
+            初學者建議先搜尋「keychain、name tag、fidget、organizer、calibration」等關鍵字，挑選有實拍列印圖、切片設定或 3MF 檔的模型。
+          </p>
+
+          <div class="resource-grid" style="margin-top:14px">
+            <article class="resource-card">
+              <h3>Printables</h3>
+              <p>Prusa 推出的模型社群，常見生活小物、工具、校正模型與教育資源，模型頁面通常有清楚的列印說明。</p>
+              <div class="resource-meta"><span>免費 / 付費</span><span>STL / 3MF</span><span>入門友善</span></div>
+              <a href="https://www.printables.com/" target="_blank" rel="noopener">前往 Printables</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>Thingiverse</h3>
+              <p>老牌開源硬體與 3D 列印模型社群，模型數量多，適合找經典範例、教具、改裝件與生活用品。</p>
+              <div class="resource-meta"><span>免費為主</span><span>社群龐大</span><span>需檢查品質</span></div>
+              <a href="https://www.thingiverse.com/" target="_blank" rel="noopener">前往 Thingiverse</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>MakerWorld</h3>
+              <p>Bambu Lab 的模型平台，常見 3MF、列印設定檔與多色模型；也整合 MakerLab，可做標牌、鑰匙圈、花瓶與簡易生成工具。</p>
+              <div class="resource-meta"><span>STL / 3MF</span><span>多色列印</span><span>含生成工具</span></div>
+              <a href="https://makerworld.com/en/3d-models" target="_blank" rel="noopener">前往 MakerWorld</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>Thangs</h3>
+              <p>可搜尋與下載模型，也適合找設計師作品、功能性零件、收納工具、玩具與付費模型商店。</p>
+              <div class="resource-meta"><span>搜尋強</span><span>免費 / 付費</span><span>功能件多</span></div>
+              <a href="https://thangs.com/" target="_blank" rel="noopener">前往 Thangs</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>MyMiniFactory</h3>
+              <p>主打可列印模型與創作者商店，適合找公仔、桌遊、角色、模型收藏品與較完整的付費作品。</p>
+              <div class="resource-meta"><span>免費 / 付費</span><span>公仔模型</span><span>創作者商店</span></div>
+              <a href="https://www.myminifactory.com/" target="_blank" rel="noopener">前往 MyMiniFactory</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>Cults3D</h3>
+              <p>收錄大量免費與付費 STL、OBJ、3MF、CAD 模型，適合找玩具、裝飾、工具、配件與設計商品。</p>
+              <div class="resource-meta"><span>免費 / 付費</span><span>STL / OBJ / 3MF</span><span>商品化作品多</span></div>
+              <a href="https://cults3d.com/en" target="_blank" rel="noopener">前往 Cults3D</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>NIH 3D</h3>
+              <p>美國 NIH 的生醫與科學模型平台，適合教育、解剖、分子、病毒、細胞與醫療輔具案例。</p>
+              <div class="resource-meta"><span>科學教育</span><span>STL / GLB</span><span>生醫模型</span></div>
+              <a href="https://3d.nih.gov/" target="_blank" rel="noopener">前往 NIH 3D</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>GrabCAD Library</h3>
+              <p>工程 CAD 模型資源，適合找機械零件、產品外觀與裝配參考；下載後通常要再轉檔與修模才適合列印。</p>
+              <div class="resource-meta"><span>工程 CAD</span><span>STEP / SolidWorks</span><span>需轉檔</span></div>
+              <a href="https://grabcad.com/library" target="_blank" rel="noopener">前往 GrabCAD Library</a>
+            </article>
+          </div>
+
+          <div class="section-kicker" style="margin-top:24px">AI 3D Tools</div>
+          <h2>AI 3D 列印與模型生成網站</h2>
+          <p style="margin-top:8px;color:var(--muted)">
+            AI 生成模型很適合概念發想與角色、道具、裝飾品草稿，但不一定能直接列印。進切片前要檢查是否破面、太薄、懸空、比例錯誤，必要時用 Tinkercad、Blender、Meshmixer 或切片軟體修復。
+          </p>
+
+          <div class="resource-grid" style="margin-top:14px">
+            <article class="resource-card">
+              <h3>MakerWorld MakerLab</h3>
+              <p>偏向 3D 列印用途的線上生成工具，包含 Image to 3D Model、Image to Keychain、Make My Sign、Make My Vase、Lithophane 等，適合初學者快速做出可列印小物。</p>
+              <div class="resource-meta"><span>列印導向</span><span>鑰匙圈 / 標牌</span><span>入門推薦</span></div>
+              <a href="https://makerworld.com/en/makerlab" target="_blank" rel="noopener">前往 MakerLab</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>Meshy</h3>
+              <p>可用文字、圖片與對話提示生成 3D 模型，支援匯出 GLB、FBX、OBJ、STL、USDZ、3MF 等格式，適合角色、道具與創意模型草稿。</p>
+              <div class="resource-meta"><span>Text / Image to 3D</span><span>STL / 3MF</span><span>需檢查網格</span></div>
+              <a href="https://www.meshy.ai/" target="_blank" rel="noopener">前往 Meshy</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>Tripo AI</h3>
+              <p>可從文字或圖片生成 3D 模型，並可下載 STL、OBJ、FBX 等格式。適合先做概念模型，再進一步修模、縮放與切片。</p>
+              <div class="resource-meta"><span>Text / Image to 3D</span><span>STL / OBJ / FBX</span><span>概念草稿</span></div>
+              <a href="https://www.tripo3d.ai/" target="_blank" rel="noopener">前往 Tripo AI</a>
+            </article>
+
+            <article class="resource-card">
+              <h3>Sloyd</h3>
+              <p>提供文字、圖片與範本式 3D 生成，可用範本控制造型，適合做低門檻的道具、場景物件與可列印概念模型。</p>
+              <div class="resource-meta"><span>AI + 範本</span><span>可快速迭代</span><span>適合概念設計</span></div>
+              <a href="https://www.sloyd.ai/" target="_blank" rel="noopener">前往 Sloyd</a>
+            </article>
+          </div>
+
+          <div class="callout">
+            <strong>課堂提醒：</strong>下載模型前先看授權，尤其是能不能商用、能不能改作、能不能公開分享。AI 生成模型也一樣，列印前要檢查模型是否封閉、厚度是否足夠、底面是否貼平，以及切片預覽有沒有缺面或奇怪路徑。
+          </div>
+        </div>
+      </section>
+
+      <section id="check">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Assessment</div>
+            <h2>學習檢核與課後延伸</h2>
+            <p>課程最後 5 分鐘用於確認每位學員是否掌握概念，也能當成講師的收尾口訣。</p>
+          </div>
+          <div class="time-pill">115-120 分</div>
+        </div>
+        <div class="section-body">
+          <div class="checklist" id="checklist">
+            <label class="check">
+              <span class="box" aria-hidden="true"></span>
+              <span>我能說出 3D 列印的基本發展脈絡。</span>
+            </label>
+            <label class="check">
+              <span class="box" aria-hidden="true"></span>
+              <span>我能分辨 FDM、SLA、SLS 的主要差異。</span>
+            </label>
+            <label class="check">
+              <span class="box" aria-hidden="true"></span>
+              <span>我能依作品用途說出適合的基本材料。</span>
+            </label>
+            <label class="check">
+              <span class="box" aria-hidden="true"></span>
+              <span>我能說明從建模到列印的完整流程。</span>
+            </label>
+            <label class="check">
+              <span class="box" aria-hidden="true"></span>
+              <span>我能用 Tinkercad 建立簡單模型。</span>
+            </label>
+            <label class="check">
+              <span class="box" aria-hidden="true"></span>
+              <span>我知道 STL 與 G-code 的差別。</span>
+            </label>
+            <label class="check">
+              <span class="box" aria-hidden="true"></span>
+              <span>我能在切片軟體中完成基本設定與預覽。</span>
+            </label>
+          </div>
+
+          <div class="grid-2" style="margin-top:18px">
+            <div class="mini-card accent-teal">
+              <h3>若延伸成 3 小時</h3>
+              <p>第 3 小時建議安排作品修正、實際列印觀察、首層校正、常見失敗排除與成果分享。</p>
+            </div>
+            <div class="mini-card accent-blue">
+              <h3>講師備品</h3>
+              <p>PLA 線材、已列印樣品、失敗案例、範例 STL、範例 G-code、游標卡尺與備用模型檔。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        3D 列印研習 2 小時課程教案 · 適合國中小、高中職、社群工作坊與 Maker 入門活動
+      </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const checks = document.querySelectorAll(".check");
+    const storageKey = "three_d_printing_workshop_checks";
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+
+    checks.forEach((check, index) => {
+      if (saved.includes(index)) {
+        check.classList.add("done");
+      }
+
+      check.addEventListener("click", () => {
+        check.classList.toggle("done");
+        const done = Array.from(checks)
+          .map((item, itemIndex) => item.classList.contains("done") ? itemIndex : null)
+          .filter((itemIndex) => itemIndex !== null);
+        localStorage.setItem(storageKey, JSON.stringify(done));
+      });
+    });
+
+    const sideLinks = Array.from(document.querySelectorAll(".side-menu a"));
+    const linkedSections = sideLinks
+      .map((link) => document.querySelector(link.getAttribute("href")))
+      .filter(Boolean);
+
+    const setActiveSection = (id) => {
+      sideLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
+      });
+    };
+
+    if ("IntersectionObserver" in window) {
+      const sectionObserver = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+      }, {
+        rootMargin: "-20% 0px -65% 0px",
+        threshold: [0.05, 0.15, 0.3]
+      });
+
+      linkedSections.forEach((section) => sectionObserver.observe(section));
+    }
+  </script>
+</body>
+</html>
