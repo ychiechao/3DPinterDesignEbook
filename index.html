@@ -925,6 +925,49 @@
       font-size: 14px;
     }
 
+    .mini-card .project-level {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      margin-bottom: 10px;
+      border-radius: 999px;
+      background: #eef6ff;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .mini-card ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .mini-card li::marker {
+      color: var(--teal);
+    }
+
+    .project-note {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid #fde68a;
+      border-left: 5px solid var(--amber);
+      border-radius: 8px;
+      background: #fffbeb;
+      color: #5b4212;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .project-note strong {
+      color: #2f2410;
+    }
+
     .mini-card.accent-blue {
       border-top: 4px solid var(--blue);
     }
@@ -1693,8 +1736,8 @@
             <div class="agenda-row">
               <div class="minutes">55-85 分</div>
               <strong>Tinkercad 實作</strong>
-              <div class="detail">環境與視角、繪圖工具、實體與洞、尺寸微調、聯集與交集概念、匯入匯出。</div>
-              <div class="method">設計姓名牌或鑰匙圈</div>
+              <div class="detail">環境與視角、繪圖工具、實體與洞、尺寸微調、聯集與交集概念，整合名牌、小盒子與功能容器作業。</div>
+              <div class="method">三段式實作任務</div>
             </div>
             <div class="agenda-row">
               <div class="minutes">85-105 分</div>
@@ -2132,19 +2175,20 @@
               </div>
 
               <div class="callout">
-                <strong>30 分鐘建議節奏：</strong>環境與視角 5 分、工具介紹 5 分、實體/洞與尺寸微調 8 分、布林組合 7 分、匯出匯入 5 分。
+                <strong>30 分鐘建議節奏：</strong>環境與工具 8 分、個人立體名牌帶做 12 分、可抽蓋小盒子布林示範 6 分、手機架或盆栽容器挑戰說明與匯出 4 分。
               </div>
             </div>
 
             <aside class="spec-box">
               <h3>實作成果</h3>
               <ul class="spec-list">
-                <li>完成姓名牌或鑰匙圈</li>
+                <li>完成個人立體名牌</li>
                 <li>使用長方體、圓柱、文字等至少 2 種物件</li>
                 <li>能切換視角並檢查模型是否貼平</li>
                 <li>能用 Solid 與 Hole 做出吊孔或凹槽</li>
                 <li>能用 Ruler 輸入尺寸並微調位置</li>
                 <li>能完成 Group / Ungroup 與 Align</li>
+                <li>能說明小盒子、手機架或盆栽容器的建模重點</li>
                 <li>能匯出 STL，並知道如何重新匯入檢查</li>
               </ul>
             </aside>
@@ -2195,6 +2239,84 @@
                 <td>Export STL，Import 回 Tinkercad 檢查比例</td>
                 <td>下載作品 STL 並準備切片</td>
                 <td>檔案可匯入切片軟體且大小正確</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="project-note">
+            <strong>Tinkercad 實作作業安排：</strong>個人立體名牌作為全班共同完成的主任務，確保每位學員都完成一個可切片作品；可抽蓋小盒子用來示範 Solid、Hole、Group 的布林概念，學員完成關鍵結構即可；手機架或盆栽容器作為功能設計挑戰，適合讓進度較快的學員延伸，或作為課後作品題目。
+          </div>
+
+          <div class="grid-3" style="margin-top:16px">
+            <article class="mini-card accent-blue">
+              <div class="project-level">作業 1｜基礎操作</div>
+              <h3>個人立體名牌列印</h3>
+              <p><strong>學習目標：</strong>熟悉 Tinkercad 環境、滑鼠視角、物件拖曳、尺寸調整、對齊、群組與匯出 STL。</p>
+              <ul>
+                <li>建議尺寸：底板 70 × 25 × 3 mm，文字高度 1.5-2 mm，吊孔直徑 4-5 mm。</li>
+                <li>操作步驟：建立底板，加入姓名文字，調整文字大小與高度，使用 Align 置中對齊。</li>
+                <li>造型要求：加入吊孔、圓角、邊框或一個凸起裝飾，至少使用 2 種基本形狀。</li>
+                <li>完成條件：文字與底板已群組、模型貼平工作平面、吊孔確實穿透、可匯出 STL。</li>
+                <li>切片檢核：匯入切片軟體後比例正確，底面貼平台，預估列印時間可接受。</li>
+              </ul>
+            </article>
+
+            <article class="mini-card accent-teal">
+              <div class="project-level">作業 2｜布林組合</div>
+              <h3>可抽蓋的小盒子設計</h3>
+              <p><strong>學習目標：</strong>理解實體與洞的差異，練習聯集、差集、內腔、滑槽與可活動間隙的設計概念。</p>
+              <ul>
+                <li>建議尺寸：盒身約 60 × 40 × 18 mm，壁厚 2 mm 以上，底厚 2-3 mm。</li>
+                <li>操作步驟：用 Box 建立外盒，複製一個較小 Box 設為 Hole，對齊後 Group 挖出內腔。</li>
+                <li>抽蓋設計：建立薄板作為滑蓋，兩側可加導軌或滑槽，與盒身保留約 0.4-0.6 mm 間隙。</li>
+                <li>布林重點：Solid + Solid 群組是聯集；Solid + Hole 群組是差集；Ungroup 可回頭修改孔洞。</li>
+                <li>完成條件：盒身有可見內腔，滑蓋方向清楚，壁厚不過薄，模型沒有封死或重疊錯位。</li>
+                <li>切片檢核：盒身與蓋子可分件切片，底面穩定貼平台，滑槽處沒有太多懸空。</li>
+              </ul>
+            </article>
+
+            <article class="mini-card accent-amber">
+              <div class="project-level">作業 3｜功能挑戰</div>
+              <h3>手機架或盆栽容器設計</h3>
+              <p><strong>學習目標：</strong>從造型建模進入功能設計，思考尺寸、穩定性、支撐角度、壁厚、孔洞與列印方向。</p>
+              <ul>
+                <li>二選一：手機架適合練習角度與支撐；盆栽容器適合練習內腔、壁厚與排水孔。</li>
+                <li>手機架要求：底座寬度約 70 mm 以上，支撐角度約 65-75 度，加入止滑擋片與充電線開孔。</li>
+                <li>盆栽容器要求：容器高度約 45-60 mm，壁厚 2 mm 以上，底部加入 3 個以上排水孔。</li>
+                <li>操作重點：用 Ruler 控制關鍵尺寸，用 Rotate 調整支撐角度，用 Hole 製作開孔與內腔。</li>
+                <li>完成條件：作品能說明用途，底部穩定，壁厚合理，孔洞有穿透，沒有明顯懸空薄片。</li>
+                <li>切片檢核：預覽是否需要支撐，若支撐太多，回到 Tinkercad 調整角度或改變列印方向。</li>
+              </ul>
+            </article>
+          </div>
+
+          <table class="type-table" style="margin-top:16px">
+            <thead>
+              <tr>
+                <th>作業</th>
+                <th>教師帶法</th>
+                <th>學員交件</th>
+                <th>評量檢核</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>個人立體名牌</strong></td>
+                <td>全班同步操作，講師一步一步示範視角、尺寸、對齊、群組與匯出。</td>
+                <td>STL 檔、切片預覽畫面，若時間允許可排入現場列印。</td>
+                <td>有文字、有吊孔或凹凸設計、尺寸合理、可正常切片。</td>
+              </tr>
+              <tr>
+                <td><strong>可抽蓋小盒子</strong></td>
+                <td>講師示範盒身挖空與滑蓋間隙，學員完成盒身、內腔與一個可抽蓋方向。</td>
+                <td>盒身 STL、蓋子 STL，或一張能看出滑蓋結構的截圖。</td>
+                <td>能說明 Solid、Hole、Group 的效果，盒身與蓋子不互相卡死。</td>
+              </tr>
+              <tr>
+                <td><strong>手機架或盆栽容器</strong></td>
+                <td>講師展示設計限制，學員二選一起稿，進度快者完成 STL 與切片預覽。</td>
+                <td>作品 STL、用途說明一句話、切片預覽畫面。</td>
+                <td>功能清楚、尺寸可用、底部穩定、孔洞或支撐結構符合用途。</td>
               </tr>
             </tbody>
           </table>
@@ -2488,7 +2610,7 @@ G1 X70 Y45 E8.4</pre>
             </label>
             <label class="check">
               <span class="box" aria-hidden="true"></span>
-              <span>我能用 Tinkercad 建立簡單模型。</span>
+              <span>我能用 Tinkercad 完成名牌，並理解小盒子與功能作品的設計重點。</span>
             </label>
             <label class="check">
               <span class="box" aria-hidden="true"></span>
