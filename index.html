@@ -797,6 +797,83 @@
       text-decoration: underline;
     }
 
+    .submission-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) 280px;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .submission-main,
+    .qr-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 20px;
+    }
+
+    .submission-main {
+      border-top: 5px solid var(--teal);
+      background: linear-gradient(135deg, #ffffff, #ecfeff);
+    }
+
+    .submission-main h3 {
+      margin: 6px 0 10px;
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1.35;
+    }
+
+    .submission-main p {
+      margin: 0;
+      color: var(--text);
+    }
+
+    .submission-actions {
+      margin-top: 18px;
+    }
+
+    .submission-link {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px dashed #8dd8e8;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.6;
+      word-break: break-all;
+    }
+
+    .qr-card {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      border-top: 5px solid var(--amber);
+      background: linear-gradient(180deg, #fffaf0, #fff);
+    }
+
+    .qr-card img {
+      width: 190px;
+      height: 190px;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 14px 26px rgba(23, 32, 51, 0.12);
+    }
+
+    .qr-card strong {
+      margin-top: 14px;
+      color: var(--ink);
+      font-size: 17px;
+    }
+
+    .qr-card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
     section {
       scroll-margin-top: 92px;
       margin: 0 0 26px;
@@ -1398,7 +1475,8 @@
       .case-grid,
       .material-photo-grid,
       .video-grid,
-      .resource-grid {
+      .resource-grid,
+      .submission-panel {
         grid-template-columns: 1fr;
       }
 
@@ -1578,6 +1656,7 @@
         <a href="#slicer">切片軟體</a>
         <a href="#files">STL / G-code</a>
         <a href="#print-lab">列印實作</a>
+        <a href="#submission">作業繳交</a>
         <a href="#resources">資源網站</a>
         <a href="#check">學習檢核</a>
       </nav>
@@ -1599,8 +1678,9 @@
           <a href="#slicer"><span>09</span>切片軟體</a>
           <a href="#files"><span>10</span>STL / G-code</a>
           <a href="#print-lab"><span>11</span>列印實作</a>
-          <a href="#resources"><span>12</span>資源網站</a>
-          <a href="#check"><span>13</span>學習檢核</a>
+          <a href="#submission"><span>12</span>作業繳交</a>
+          <a href="#resources"><span>13</span>資源網站</a>
+          <a href="#check"><span>14</span>學習檢核</a>
         </div>
       </aside>
 
@@ -1615,6 +1695,7 @@
           <div class="hero-actions">
             <a class="action primary" href="#intro">先看案例簡介</a>
             <a class="action" href="#tinkercad">跳到實作任務</a>
+            <a class="action" href="#submission">作業繳交區</a>
             <a class="action" href="#check">查看課後檢核</a>
           </div>
         </div>
@@ -1640,7 +1721,7 @@
           <span>分鐘完整規劃</span>
         </div>
         <div class="metric">
-          <b>13</b>
+          <b>14</b>
           <span>個章節入口</span>
         </div>
         <div class="metric">
@@ -2591,6 +2672,78 @@ G1 X70 Y45 E8.4</pre>
               </tr>
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section id="submission">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Submission Zone</div>
+            <h2>作業繳交區</h2>
+            <p>請將課堂完成的 Tinkercad 作品、切片檔案或預覽截圖集中上傳到 Google Drive。資料夾已開放知道連結者存取，適合課堂投影、學習單與課後補交使用。</p>
+          </div>
+          <div class="time-pill">課後交件</div>
+        </div>
+        <div class="section-body">
+          <div class="submission-panel">
+            <article class="submission-main">
+              <div class="section-kicker">Google Drive Upload</div>
+              <h3>把 STL、G-code、作品照片與設計說明上傳到同一個資料夾</h3>
+              <p>建議每位學生建立自己的資料夾，或依檔名規則上傳，方便講師快速檢查模型是否完成、能不能切片，以及學生是否理解自己的設計修正方向。</p>
+              <div class="hero-actions submission-actions">
+                <a class="action primary" href="https://drive.google.com/drive/folders/13ZSqvyoAXH29PD9bzKlNhyKt1CaiI8pT?usp=sharing" target="_blank" rel="noopener">開啟作業繳交資料夾</a>
+                <a class="action" href="#tinkercad">回到 Tinkercad 作業說明</a>
+              </div>
+              <div class="submission-link">https://drive.google.com/drive/folders/13ZSqvyoAXH29PD9bzKlNhyKt1CaiI8pT?usp=sharing</div>
+            </article>
+
+            <aside class="qr-card" aria-label="作業繳交區 QR code">
+              <img
+                src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=16&data=https%3A%2F%2Fdrive.google.com%2Fdrive%2Ffolders%2F13ZSqvyoAXH29PD9bzKlNhyKt1CaiI8pT%3Fusp%3Dsharing"
+                alt="作業繳交區 Google Drive QR code"
+                loading="lazy"
+                referrerpolicy="no-referrer"
+              >
+              <strong>手機掃描上傳</strong>
+              <span>適合直接上傳作品照片、切片截圖或從雲端硬碟 App 管理檔案。</span>
+            </aside>
+          </div>
+
+          <div class="grid-3" style="margin-top:16px">
+            <article class="mini-card accent-blue">
+              <h3>繳交內容</h3>
+              <ul>
+                <li>至少一個 Tinkercad 匯出的 STL。</li>
+                <li>切片後的 G-code，或切片預覽截圖。</li>
+                <li>作品完成照、列印照片或模型預覽圖。</li>
+                <li>簡短設計說明：用途、尺寸、材料與遇到的問題。</li>
+              </ul>
+            </article>
+
+            <article class="mini-card accent-teal">
+              <h3>檔名規則</h3>
+              <ul>
+                <li>建議格式：班級_座號_姓名_作品名稱。</li>
+                <li>範例：701_05_王小明_立體名牌.stl。</li>
+                <li>若有多個檔案，可加上 v1、v2 或 box、lid 區分。</li>
+                <li>分件作品請確認每個零件都有清楚名稱。</li>
+              </ul>
+            </article>
+
+            <article class="mini-card accent-amber">
+              <h3>上傳禮儀</h3>
+              <ul>
+                <li>不要刪除、搬移或重新命名同學的檔案。</li>
+                <li>不要上傳個資、私密照片或與課程無關的檔案。</li>
+                <li>重新繳交時保留新版即可，或在檔名標示版本。</li>
+                <li>上傳後檢查檔案是否能開啟，避免空檔或錯檔。</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="callout">
+            <strong>講師提醒：</strong>資料夾若設定為「知道連結的任何人」，請在課堂上明確提醒學生尊重他人作品；若擔心誤刪，可請學生先建立個人子資料夾，或由講師課後再整理備份。
+          </div>
         </div>
       </section>
 
